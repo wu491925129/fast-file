@@ -17,7 +17,15 @@ spring:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
         debug: false
-
+  servlet:
+    # 文件上传上限
+    multipart:
+      max-file-size: 200Mb
+      max-request-size: 200Mb
 
 # 通用配置
 # ################################
+# windows
+file_path: D:\opt\upload
+# linux
+#file_path: \opt\upload

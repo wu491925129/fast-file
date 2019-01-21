@@ -1,5 +1,7 @@
 package com.wulong.project.core;
 
+import java.io.File;
+
 /**
  * 项目常量
  */
@@ -43,4 +45,9 @@ public final class ProjectConstant {
      * jwt token
      */
     public static final String JWT_TOKEN = "auth_token";
+
+    /**
+     * 定义常量斜杠，由于window路径用反斜杠表示是，而linux中路径用正斜杠表示
+     */
+    public static final String FILE_SEPARATOR = File.separator;
 }

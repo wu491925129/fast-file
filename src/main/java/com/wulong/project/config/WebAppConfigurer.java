@@ -59,11 +59,12 @@ public class WebAppConfigurer implements WebMvcConfigurer {
 		// 多个拦截器组成一个拦截器链
 		// addPathPatterns 用于添加拦截规则
 		// excludePathPatterns 用户排除拦截
-		//接口签名认证拦截器
-		//开发环境忽略签名认证
-		if (!"dev".equals(env)) {
+		// 接口签名认证拦截器
+		// 开发环境忽略签名认证
+		// 取消拦截器
+		/*if (!"dev".equals(env)) {
 			registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/**");
-		}
+		}*/
 	}
 
 	/**

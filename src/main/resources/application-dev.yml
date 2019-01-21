@@ -1,8 +1,8 @@
 # 开发环境配置
 server:
-  port: 8888
+  port: 9999
   servlet:
-    context-path: /test
+    context-path: /fastFile
 
 spring:
   application:
@@ -16,7 +16,7 @@ spring:
     druid:
       filters: stat
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&autoReconnect=true
+      url: jdbc:mysql://localhost:3306/fast_file?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&autoReconnect=true
       username: root
       password: 123456
       initial-size: 10

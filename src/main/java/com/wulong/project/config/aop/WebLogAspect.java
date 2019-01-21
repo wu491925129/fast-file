@@ -77,15 +77,17 @@ public class WebLogAspect {
 	@AfterReturning(pointcut="webLog()",argNames = "joinPoint,retVal",returning = "retVal")
 	public void doAfterReturning(JoinPoint joinPoint,Object retVal) {
 		logger.info("请求耗时: "+(System.currentTimeMillis()-startTime)+"毫秒");
-		Map<String,Object> result = JSONObject.parseObject(JSON.toJSONString(retVal,SerializerFeature.WriteMapNullValue));
-		if (result.containsKey("data")) {
-			Map<String,Object> dataMap = (Map<String, Object>) result.get("data");
-			if (dataMap != null && dataMap.containsKey("auth_token")) {
-				((Map<String, Object>) result.get("data")).put("auth_token","******");
+		if (retVal instanceof Map) {
+			Map<String,Object> result = JSONObject.parseObject(JSON.toJSONString(retVal,SerializerFeature.WriteMapNullValue));
+			if (result.containsKey("data")) {
+				Map<String,Object> dataMap = (Map<String, Object>) result.get("data");
+				if (dataMap != null && dataMap.containsKey("auth_token")) {
+					((Map<String, Object>) result.get("data")).put("auth_token","******");
+				}
 			}
+			logger.info("返回结果: "+JSON.toJSONString(result));
 		}
 		doSLog(joinPoint,retVal);
-		logger.info("返回结果: "+JSON.toJSONString(result));
 		// 处理完请求，返回内容
 		logger.info("------------------------- 请求成功  End  -------------------------");
 	}
