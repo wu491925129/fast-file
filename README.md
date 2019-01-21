@@ -1,10 +1,11 @@
-# spring-boot-generator
+# fast-file
 
 ## 项目简介
-本项目为spring-boot脚手架，开箱即用
+本项目使用https://github.com/wu491925129/spring-boot-generator脚手架搭建进行二次开发,
+本项目为一个文件服务器，实现文件的上传下载以及获取文件信息的功能。
 
 ## 功能特性
-内置全局异常处理、拦截器、log4j2日志、aop日志管理、PageHelper分页、JWT Token签名
+集成全局异常处理、拦截器、log4j2日志、aop日志管理、PageHelper分页
 
 ## 环境依赖
 JKD1.8
@@ -34,4 +35,4 @@ application-test为测试环境配置文件，
 * 打开test/CodeGenerator.java，输入好数据库连接信息
 * 在main方法中输入连接的数据库中的表名后运行main方法，自动生成dao、model、service、web、mapper文件
 * web为视图api文件
-* 项目默认访问路径为http://localhost:8888/test
+* 项目默认访问路径为http://localhost:9999/fastFile
