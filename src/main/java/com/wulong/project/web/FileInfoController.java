@@ -1,13 +1,16 @@
 package com.wulong.project.web;
+
 import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.common.base.Strings;
 import com.wulong.project.core.ProjectConstant;
 import com.wulong.project.core.Result;
 import com.wulong.project.core.ResultCode;
 import com.wulong.project.core.ResultGenerator;
 import com.wulong.project.model.FileInfo;
 import com.wulong.project.service.FileInfoService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.wulong.project.tool.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -137,7 +140,11 @@ public class FileInfoController {
             if (!fileDir.exists()) {
                 fileDir.mkdirs();
             }
-            file.transferTo(new File(ph + ProjectConstant.FILE_SEPARATOR + fileInfo.getFileId() + "_" + fileName));
+            String fp = ph + ProjectConstant.FILE_SEPARATOR + fileInfo.getFileId() + "_" + fileName;
+            // 文件保存
+            file.transferTo(new File(fp));
+            // 图片生成缩略图
+            ImageUtils.createThumbnail(file.getSize(),fp,fileInfo.getFileSuffix());
             fileInfoService.save(fileInfo);
             Map<String, String> dataMap = new HashMap<>();
             dataMap.put("fileId", fileInfo.getFileId());
@@ -151,6 +158,19 @@ public class FileInfoController {
         return result;
     }
 
+    @JsonRawValue
+    @GetMapping("/download/{fileId}")
+    public Object downloadFile(@PathVariable String fileId,HttpServletResponse response) {
+        FileInfo fileInfo = fileInfoService.findById(fileId);
+        if (fileInfo != null) {
+            File file = new File(fileInfo.getFilePath() + fileId + "_" + fileInfo.getFileName());
+            return export(file, fileInfo.getFileName());
+        }
+        // 直接返回404错误页面
+        response.setStatus(404);
+        return ResultGenerator.genFailResult("文件不存在！");
+    }
+
     /**
      * 文件下载
      *
@@ -158,18 +178,24 @@ public class FileInfoController {
      * @return
      */
     @JsonRawValue
-    @GetMapping("/download/{fileId}")
-    public Object downloadFile(@PathVariable String fileId, HttpServletResponse response) {
+    @GetMapping("/download/{fileId}/{thumb}")
+    public Object downloadFile(@PathVariable String fileId,@PathVariable String thumb, HttpServletResponse response) {
         FileInfo fileInfo = fileInfoService.findById(fileId);
         if (fileInfo != null) {
-            File file = new File(fileInfo.getFilePath() + fileId + "_" + fileInfo.getFileName());
-            return export(file,fileInfo.getFileName());
+            File  file = new File(fileInfo.getFilePath() + fileId + "_" + fileInfo.getFileName().replaceAll("\\."+ fileInfo.getFileSuffix(),"_thumb."+fileInfo.getFileSuffix()));
+            return export(file, fileInfo.getFileName());
         }
         // 直接返回404错误页面
         response.setStatus(404);
         return ResultGenerator.genFailResult("文件不存在！");
     }
 
+    /**
+     * 下载
+     * @param file
+     * @param fileName
+     * @return
+     */
     public ResponseEntity<FileSystemResource> export(File file, String fileName) {
         if (file == null) {
             return null;
