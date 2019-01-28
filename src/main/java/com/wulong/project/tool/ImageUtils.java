@@ -1,9 +1,8 @@
 package com.wulong.project.tool;
 
-import com.alibaba.druid.sql.visitor.functions.If;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,6 +44,31 @@ public class ImageUtils {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static File getImgBy(String filePath, int size, Double quality,String imgSuffix) {
+        // 判断是否是图片
+        String[] imgSuffixs = {"BMP","DIB","EMF","GIF","ICB","ICO","JPG","JPEG","PBM","PCD","PCX","PGM","PNG","PPM","PSD","PSP","RLE","SGI","TGA","TIF"};
+        List<String> list = Arrays.asList(imgSuffixs);
+        String upperSuffix = imgSuffix.toUpperCase();
+        if (!list.contains(upperSuffix)) {
+            return null;
+        }
+        try {
+            // 创建临时文件
+            File tmpFile = new File(filePath.replaceAll(("\\."+imgSuffix),"_thumb"+"."+imgSuffix));
+            // 源文件
+            File file = new File(filePath);
+            Thumbnails
+                .of(file)
+                .size(size,size)
+                .outputQuality(quality)
+                .toFile(tmpFile);
+            return tmpFile;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

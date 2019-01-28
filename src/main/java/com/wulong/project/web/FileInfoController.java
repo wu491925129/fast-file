@@ -3,7 +3,6 @@ package com.wulong.project.web;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.common.base.Strings;
 import com.wulong.project.core.ProjectConstant;
 import com.wulong.project.core.Result;
 import com.wulong.project.core.ResultCode;
@@ -184,6 +183,20 @@ public class FileInfoController {
         if (fileInfo != null) {
             File  file = new File(fileInfo.getFilePath() + fileId + "_" + fileInfo.getFileName().replaceAll("\\."+ fileInfo.getFileSuffix(),"_thumb."+fileInfo.getFileSuffix()));
             return export(file, fileInfo.getFileName());
+        }
+        // 直接返回404错误页面
+        response.setStatus(404);
+        return ResultGenerator.genFailResult("文件不存在！");
+    }
+
+    @JsonRawValue
+    @GetMapping("/download")
+    public Object downloadFile(@RequestParam("f") String fileId,@RequestParam("s") int size,@RequestParam("q") double quality, HttpServletResponse response) {
+        FileInfo fileInfo = fileInfoService.findById(fileId);
+        if (fileInfo != null) {
+            String filePath = fileInfo.getFilePath() + fileId + "_" + fileInfo.getFileName();
+            File tmpFile = ImageUtils.getImgBy(filePath,size,quality,fileInfo.getFileSuffix());
+            return export(tmpFile, fileInfo.getFileName());
         }
         // 直接返回404错误页面
         response.setStatus(404);
