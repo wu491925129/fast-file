@@ -1,7 +1,7 @@
 # 指定生效的配置文件
 spring:
   profiles:
-    active: dev
+    active: prod
   # 404交给异常处理器处理
   mvc:
     throw-exception-if-no-handler-found: true
